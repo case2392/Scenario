@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Zillow Scenarios — Detailed PDF",
+  "version": "0.1.0",
+  "description": "Adds a Detailed PDF button to the Pricing & Scenarios page that exports selected scenarios with a full closing-cost breakdown.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://operator.zillowhomeloans.com/*"
+  ],
+  "action": {
+    "default_title": "Zillow Scenarios — Detailed PDF settings",
+    "default_popup": "options.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://operator.zillowhomeloans.com/loan-officer-portal/*/pricing-and-scenarios/scenarios*"
+      ],
+      "css": ["content.css"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["report.html", "report.js", "report.css"],
+      "matches": ["https://operator.zillowhomeloans.com/*"]
+    }
+  ]
+}
