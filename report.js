@@ -106,6 +106,7 @@ function colgroup(n) {
 
 function buildOptionHeaders(scenarios, winners) {
   const tmpl = gridTemplate(scenarios.length);
+  const compact = scenarios.length > 2;
   let row = `<div class="opt-headers" style="grid-template-columns:${tmpl}"><div></div>`;
   scenarios.forEach((s, i) => {
     const letter = String.fromCharCode(65 + i);
@@ -122,7 +123,10 @@ function buildOptionHeaders(scenarios, winners) {
         pillHtml = `<span class="pill ghost">—</span>`;
       }
     }
-    row += `<div class="opt-header ${cls}"><span class="swatch"></span><span>Option ${letter} · ${escapeHtml(programLabel(s))}</span>${pillHtml}</div>`;
+    const label = compact
+      ? `Option ${letter} · ${escapeHtml(getRate(s) || "")}`
+      : `Option ${letter} · ${escapeHtml(programLabel(s))}`;
+    row += `<div class="opt-header ${cls}"><span class="swatch"></span><span class="opt-label">${label}</span>${pillHtml}</div>`;
   });
   return row + `</div>`;
 }
@@ -189,8 +193,10 @@ function buildDecisionCard(scenarios) {
     return diff === 0 ? "— baseline" : `+ ${fmtDollar(diff)} more up front`;
   };
 
+  const headersRow = scenarios.length === 2 ? buildOptionHeaders(scenarios, winners) : "";
+
   return `<div class="decision">
-    ${buildOptionHeaders(scenarios, scenarios.length === 2 ? winners : null)}
+    ${headersRow}
     ${metricRow("Monthly payment", "PITI", scenarios, (s) => getRow(s, "Monthly P&I / PITI").split("/").map((x) => x.trim()).pop() || fmtDollar(getPITI(s)), winners.monthly, monthlyDelta)}
     ${metricRow("Cash to close", "", scenarios, (s) => getRow(s, "Cash (to) / from") || fmtDollar(getCash(s)), winners.cash, cashDelta)}
     ${breakEvenHtml}
