@@ -488,11 +488,25 @@ function render(payload) {
 
 document.getElementById("printBtn").addEventListener("click", () => window.print());
 
-chrome.storage.local.get("zhlReportPayload", ({ zhlReportPayload }) => {
-  if (!zhlReportPayload) {
+function loadPayload() {
+  return new Promise((resolve) => {
+    if (chrome?.storage?.local) {
+      chrome.storage.local.get("zhlReportPayload", ({ zhlReportPayload }) =>
+        resolve(zhlReportPayload || null)
+      );
+      return;
+    }
+    chrome.runtime.sendMessage({ type: "getReportPayload" }, (payload) =>
+      resolve(payload || null)
+    );
+  });
+}
+
+loadPayload().then((payload) => {
+  if (!payload) {
     document.getElementById("root").textContent =
       "No data found. Open the Scenarios page, select scenarios, and click Detailed PDF.";
     return;
   }
-  render(zhlReportPayload);
+  render(payload);
 });

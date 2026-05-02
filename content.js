@@ -72,7 +72,7 @@ async function handleClick() {
       sourceUrl: location.href,
     };
 
-    await chrome.storage.local.set({ zhlReportPayload: payload });
+    await saveReportPayload(payload);
     const reportUrl = chrome.runtime.getURL("report.html");
     window.open(reportUrl, "_blank");
   } catch (err) {
@@ -271,16 +271,25 @@ function scrapeBorrower() {
 
 async function getOfficerInfo() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(
-      { officerName: "", officerNmls: "", officerPhone: "", officerEmail: "" },
-      (v) =>
-        resolve({
-          name: v.officerName,
-          nmls: v.officerNmls,
-          phone: v.officerPhone,
-          email: v.officerEmail,
-        })
-    );
+    chrome.runtime.sendMessage({ type: "getOfficerInfo" }, (info) => {
+      if (chrome.runtime.lastError || !info) {
+        resolve({ name: "", nmls: "", phone: "", email: "" });
+      } else {
+        resolve(info);
+      }
+    });
+  });
+}
+
+async function saveReportPayload(payload) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ type: "saveReportPayload", payload }, (resp) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+      } else {
+        resolve(resp);
+      }
+    });
   });
 }
 
