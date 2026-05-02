@@ -270,8 +270,19 @@ html, body {
   border-bottom: 1px dashed var(--line-2);
 }
 
-.term .k { font-size: 13px; color: var(--muted); }
-.term .v { color: var(--ink-2); font-weight: 500; }
+.term .k { font-size: 13px; color: var(--muted); flex-shrink: 0; padding-right: 8px; }
+.term .v { color: var(--ink-2); font-weight: 500; text-align: right; }
+.term .v .v-row { display: flex; justify-content: flex-end; gap: 6px; align-items: baseline; }
+.term .v .v-row + .v-row { margin-top: 2px; }
+.term .v .v-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
 
 /* ── Comparison tables ─────────────────────────────────────────────────── */
 
@@ -397,18 +408,108 @@ table.cmp tr.bold td { font-weight: 600; }
 
 /* ── Print ─────────────────────────────────────────────────────────────── */
 
+@page {
+  size: letter;
+  margin: 0.4in;
+}
+
 @media print {
-  html, body { background: #fff; }
+  html, body {
+    background: #fff;
+    font-size: 11px;
+  }
   .toolbar { display: none; }
   .doc {
     max-width: none;
-    padding: 24px;
+    padding: 0;
+    margin: 0;
   }
+
+  .doc-head {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    gap: 16px;
+  }
+  .doc-head h1 { font-size: 22px; }
+  .doc-head .eyebrow { font-size: 10px; margin-bottom: 6px; }
+  .doc-head .sub { font-size: 11px; margin-top: 4px; }
+  .doc-head .right { font-size: 10.5px; line-height: 1.55; }
+
   .section, .decision {
     box-shadow: none;
     break-inside: avoid;
+    margin-bottom: 10px;
+    padding: 14px 18px;
   }
-  .doc-head { margin-bottom: 24px; }
-  .section { margin-bottom: 14px; padding: 18px 22px; }
-  .decision { margin-bottom: 14px; padding: 22px 24px; }
+  .section .head {
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .section h2 { font-size: 12px; }
+  .section .hint { font-size: 10.5px; }
+
+  .opt-headers { margin-bottom: 12px; padding-bottom: 4px; gap: 12px; }
+  .opt-header { font-size: 11px; gap: 6px; flex-wrap: wrap; }
+  .opt-header > span:nth-child(2) {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .pill {
+    font-size: 9px;
+    letter-spacing: 0.03em;
+    padding: 2px 6px;
+    margin-left: auto;
+  }
+
+  .metric-row { padding: 10px 0; gap: 16px; }
+  .metric-row + .metric-row { padding-top: 4px; }
+  .metric-row .lbl { font-size: 11px; }
+  .metric-row .lbl .lbl-sub { font-size: 9.5px; margin-top: 1px; }
+  .metric .val { font-size: 22px; }
+  .metric .opt-name { font-size: 10.5px; margin-bottom: 2px; }
+  .metric .delta { font-size: 10px; margin-top: 2px; }
+
+  .break-even {
+    font-size: 10.5px;
+    padding-top: 12px;
+    margin-top: 12px;
+    gap: 8px;
+  }
+  .break-even svg { width: 13px; height: 13px; }
+
+  .disclaimer {
+    font-size: 10.5px;
+    padding: 9px 12px;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .disclaimer svg { width: 13px; height: 13px; }
+
+  .terms-grid {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 18px;
+    row-gap: 0;
+  }
+  .term { padding: 7px 0; }
+  .term .k { font-size: 10.5px; }
+  .term .v { font-size: 11px; }
+
+  .cmp-headers { margin-bottom: 2px; padding-bottom: 4px; }
+  .cmp-headers .opt-header { font-size: 10.5px; }
+
+  table.cmp th, table.cmp td {
+    padding: 7px 3px;
+    font-size: 11px;
+  }
+  table.cmp tr.subhead th,
+  table.cmp tr.subhead td {
+    padding: 12px 0 4px;
+    font-size: 9.5px;
+  }
+
+  .doc-foot {
+    padding-top: 12px;
+    margin-top: 14px;
+    font-size: 10px;
+  }
 }

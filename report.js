@@ -265,13 +265,18 @@ function buildLoanTerms(scenarios) {
   const cells = TERM_FIELDS.map((f) => {
     const getter = get(f);
     const same = valuesIdentical(scenarios, getter);
-    let value;
+    let valueHtml;
     if (same) {
-      value = getter(scenarios[0]) || "—";
+      valueHtml = escapeHtml(getter(scenarios[0]) || "—");
     } else {
-      value = scenarios.map((s, i) => `${String.fromCharCode(65 + i)}: ${getter(s) || "—"}`).join(" / ");
+      valueHtml = scenarios
+        .map((s, i) => {
+          const letter = String.fromCharCode(65 + i);
+          return `<div class="v-row"><span class="v-tag">${letter}</span>${escapeHtml(getter(s) || "—")}</div>`;
+        })
+        .join("");
     }
-    return `<div class="term"><span class="k">${escapeHtml(f.label)}</span><span class="v">${escapeHtml(value)}</span></div>`;
+    return `<div class="term"><span class="k">${escapeHtml(f.label)}</span><span class="v">${valueHtml}</span></div>`;
   }).join("");
 
   const hint = scenarios.length === 1
