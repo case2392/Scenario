@@ -11,7 +11,8 @@ const COMPARE_ROWS = [
   { key: "Points / Price" },
   { key: "Lock period" },
   { key: "Monthly P&I / PITI", label: "Monthly P&I / PITI" },
-  { key: "Seller credit", section: "Costs & cash" },
+  { key: "Down payment", section: "Costs & cash" },
+  { key: "Seller credit" },
   { key: "Total closing costs" },
   { key: "Cash (to) / from" },
   { key: "DTI", section: "Borrower" },
@@ -209,5 +210,4 @@ chrome.storage.local.get("zhlReportPayload", ({ zhlReportPayload }) => {
     return;
   }
   render(zhlReportPayload);
-  setTimeout(() => window.print(), 600);
 });

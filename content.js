@@ -40,13 +40,21 @@ async function handleClick() {
     return;
   }
 
+  const officer = await getOfficerInfo();
+  if (!officerIsConfigured(officer)) {
+    alert(
+      "Please fill in your loan officer info first. Opening the settings page now."
+    );
+    chrome.runtime.sendMessage({ type: "openOptions" });
+    return;
+  }
+
   document.body.classList.add("zhl-scraping");
   showStatus("Collecting scenario data…");
   btn.disabled = true;
 
   try {
     const borrower = scrapeBorrower();
-    const officer = await getOfficerInfo();
     const scenarios = [];
 
     for (let i = 0; i < checkboxes.length; i++) {
@@ -265,9 +273,19 @@ async function getOfficerInfo() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(
       { officerName: "", officerNmls: "", officerPhone: "", officerEmail: "" },
-      (v) => resolve(v)
+      (v) =>
+        resolve({
+          name: v.officerName,
+          nmls: v.officerNmls,
+          phone: v.officerPhone,
+          email: v.officerEmail,
+        })
     );
   });
+}
+
+function officerIsConfigured(o) {
+  return !!(o && (o.name || o.nmls || o.phone || o.email));
 }
 
 function waitFor(predicate, timeout = 3000) {
